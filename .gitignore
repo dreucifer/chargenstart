@@ -52,3 +52,4 @@ pysqlite2-doc
 
 # misc
 log.txt
+*.csv

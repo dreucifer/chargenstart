@@ -1,4 +1,4 @@
-vehicle_lookup
+Charge n' Start
 ==============
 
-RESTful API for vehicle lookup. Unique vehicle configurations are keyed by a GUID for use in other applications.
+A simple auto-electric product catalog including a vehicle lookup system.
