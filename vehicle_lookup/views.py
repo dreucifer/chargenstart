@@ -2,7 +2,7 @@
 from flask import redirect, url_for, request, render_template, current_app
 from wtforms.fields import SelectField
 from vehicle_lookup import vlookup
-from vehicle_lookup.models import Year, Part, Make, Model, Engine, Type, ModelYearEngine
+from vehicle_lookup.models import Year, Make, Model, Engine, Type, ModelYearEngine
 from vehicle_lookup.helpers import (
         get_or_create, get_makes, get_types,
         get_models, get_years, get_engines)

@@ -34,10 +34,6 @@ modelyear = Table('modelyear', db.Base.metadata,
         Column('model_id', Integer, ForeignKey('models.id_'), primary_key=True),
         Column('year_id', Integer, ForeignKey('years.id_'), primary_key=True))
 
-mye_parts = Table('mye_parts', db.Base.metadata,
-        Column('mye_id', Integer, ForeignKey('modelyearengine.id_')),
-        Column('part_id', GUID(), ForeignKey('parts.guid')))
-
 class ModelYearEngine(Level, db.Base):
     __tablename__ = 'modelyearengine'
 
@@ -47,7 +43,6 @@ class ModelYearEngine(Level, db.Base):
     engine = relationship('Engine')
     model = relationship('Model', uselist=False)
     year = relationship('Year', uselist=False)
-    parts = relationship('Part', secondary=mye_parts)
 
 class Model(Level, db.Base):
     __tablename__ = 'models'
@@ -66,22 +61,3 @@ class Year(Level, db.Base):
 
 class Engine(Level, db.Base):
     __tablename__ = 'engines'
-
-
-class Part(db.Base):
-    __tablename__ = 'parts'
-
-    guid = Column(GUID(), primary_key=True, default=uuid.uuid4)
-    name = Column(String)
-    desc_short = Column(String)
-    desc_long = Column(Text)
-    url = Column(String)
-
-    def __unicode__(self):
-        return self.name
-
-    @property
-    def serialize(self):
-        return {'name': self.name,
-                'desc_short': self.desc_short,
-                'url': self.url}

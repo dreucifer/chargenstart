@@ -3,7 +3,7 @@ from sqlalchemy.engine import reflection
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-engine = create_engine('sqlite:///vehicle.db')
+engine = create_engine('sqlite:///products.db')
 metadata = MetaData()
 session = scoped_session(
         sessionmaker(
@@ -15,5 +15,5 @@ Base = declarative_base()
 Base.query = session.query_property()
 
 def db_create():
-    import vehicle_lookup.models
+    import products.models
     Base.metadata.create_all(engine)

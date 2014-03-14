@@ -8,7 +8,7 @@ app.register_blueprint(vlookup)
 app.config.from_object('core.config')
 
 admin = Admin(app)
-import core.admin
+import vehicle_lookup.admin
 
 if not app.debug:
     import logging

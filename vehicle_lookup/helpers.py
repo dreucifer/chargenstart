@@ -2,7 +2,7 @@ import csv
 import codecs
 import functools
 import vehicle_lookup.database as db
-from vehicle_lookup.models import Year, Make, Model, Type, Engine, Part, ModelYearEngine
+from vehicle_lookup.models import Year, Make, Model, Type, Engine, ModelYearEngine
 
 def get_or_create(session, obclass, **kwargs):
     result = obclass.query.filter_by(**kwargs).first()
@@ -10,20 +10,6 @@ def get_or_create(session, obclass, **kwargs):
         result = obclass(**kwargs)
         session.add(result)
     return result
-
-def import_products(product_filename):
-    with open(product_filename) as product_file:
-        products = csv.DictReader(product_file)
-        for product in products:
-            new_prod = get_or_create(db.session, Part,
-                    name = product['Name'].decode('ascii', 'ignore'),
-                    desc_short = product['ShortDescription'].decode(
-                        'ascii', 'ignore'),
-                    desc_long = product['LongDescription'].decode(
-                        'ascii', 'ignore'),
-                    url = product['ProductUrl'].decode('ascii', 'ignore'))
-            print new_prod
-        db.session.commit()
 
 def import_data(data_filename):
     with open(data_filename) as data_file:
