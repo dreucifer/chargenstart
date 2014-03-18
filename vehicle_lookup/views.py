@@ -6,7 +6,7 @@ from vehicle_lookup.models import Year, Make, Model, Engine, Type, ModelYearEngi
 from vehicle_lookup.helpers import (
         get_or_create, get_makes, get_types,
         get_models, get_years, get_engines)
-import vehicle_lookup.database as db
+import core.database as db
 import flask.json as json
 
 @vlookup.route('/lookup')

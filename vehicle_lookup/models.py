@@ -1,7 +1,7 @@
 import uuid
 from sqlalchemy import Column, Integer, String, ForeignKey, Table, Text
 from sqlalchemy.orm import relationship, backref
-import vehicle_lookup.database as db
+import core.database as db
 from vehicle_lookup.custom_types import GUID
 
 class Level():

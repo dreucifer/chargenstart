@@ -9,6 +9,7 @@ app.config.from_object('core.config')
 
 admin = Admin(app)
 import vehicle_lookup.admin
+import products.admin
 
 if not app.debug:
     import logging
