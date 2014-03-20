@@ -1,7 +1,7 @@
 """ This holds the view logic and URL information """
 from flask import redirect, url_for, request, render_template, current_app
 from wtforms.fields import SelectField
-from vehicle_lookup import vlookup
+from vehicle_lookup import VehicleLookups
 from vehicle_lookup.models import Year, Make, Model, Engine, Type, ModelYearEngine
 from vehicle_lookup.helpers import (
         get_or_create, get_makes, get_types,
@@ -9,12 +9,12 @@ from vehicle_lookup.helpers import (
 import core.database as db
 import flask.json as json
 
-@vlookup.route('/lookup')
+@VehicleLookups.route('/lookup')
 def lookup():
     """ Render the basic template """
     return render_template('lookup.html')
 
-@vlookup.route('/', methods=['POST','GET'])
+@VehicleLookups.route('/', methods=['POST','GET'])
 def index():
     status = 'Failure'
     data = []
@@ -35,13 +35,13 @@ def index():
 
     return json.dumps({ 'status': status, 'data': data })
 
-@vlookup.route('/vlmake', methods=['POST', 'GET'])
+@VehicleLookups.route('/vlmake', methods=['POST', 'GET'])
 def vlmake():
     status = 'Success'
     data = list(get_makes())
     return json.dumps({ 'status': status, 'data': data })
 
-@vlookup.route('/vltype', methods=['POST', 'GET'])
+@VehicleLookups.route('/vltype', methods=['POST', 'GET'])
 def vltype():
     make = request.values.get('make', None, type=int)
     data = []
@@ -52,7 +52,7 @@ def vltype():
         status = 'Failure'
     return json.dumps({ 'status': status, 'data': data })
 
-@vlookup.route('/vlmodel', methods=['POST', 'GET'])
+@VehicleLookups.route('/vlmodel', methods=['POST', 'GET'])
 def vlmodel():
     data = []
     make = request.values.get('make', None, type=int)
@@ -64,7 +64,7 @@ def vlmodel():
         status = 'Failure'
     return json.dumps({'status': status, 'data': data})
 
-@vlookup.route('/vlyear', methods=['POST', 'GET'])
+@VehicleLookups.route('/vlyear', methods=['POST', 'GET'])
 def vlyear():
     data = []
     model = request.values.get('model', None, type=int)
@@ -76,8 +76,8 @@ def vlyear():
 
     return json.dumps({'status': status, 'data': data})
 
-@vlookup.route('/parts')
-@vlookup.route('/pt')
+@VehicleLookups.route('/parts')
+@VehicleLookups.route('/pt')
 def get_parts():
     from uuid import UUID
     callback = request.args.get('callback')

@@ -2,7 +2,7 @@ import uuid
 from sqlalchemy import Column, Integer, String, ForeignKey, Table, Text
 from sqlalchemy.orm import relationship, backref
 import core.database as db
-from vehicle_lookup.custom_types import GUID
+from core.types import GUID
 
 class Level():
     id_ = Column(Integer, primary_key=True)
@@ -61,3 +61,8 @@ class Year(Level, db.Base):
 
 class Engine(Level, db.Base):
     __tablename__ = 'engines'
+
+class Vehicle(Level, db.Base):
+    __tablename__ = 'vehicles'
+
+    guid = Column(GUID(), primary_key=True)

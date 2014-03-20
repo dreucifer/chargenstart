@@ -1,15 +1,17 @@
 from flask import Flask, redirect, url_for
 from flask.ext.admin import Admin
 from flask.ext.admin.contrib.sqla import ModelView
-from vehicle_lookup import vlookup
+from vehicle_lookup import VehicleLookups
+from product import Products
 
 app = Flask('chargenstart')
-app.register_blueprint(vlookup)
+app.register_blueprint(VehicleLookups)
+app.register_blueprint(Products)
 app.config.from_object('core.config')
 
 admin = Admin(app)
 import vehicle_lookup.admin
-import products.admin
+import product.admin
 
 if not app.debug:
     import logging

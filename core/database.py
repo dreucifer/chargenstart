@@ -16,5 +16,5 @@ Base.query = session.query_property()
 
 def db_create():
     import vehicle_lookup.models
-    import products.models
+    import product.models
     Base.metadata.create_all(engine)
