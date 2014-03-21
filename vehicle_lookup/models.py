@@ -1,7 +1,7 @@
 import uuid
 from sqlalchemy import Column, Integer, String, ForeignKey, Table, Text
 from sqlalchemy.orm import relationship, backref
-import core.database as db
+import database as db
 from core.types import GUID
 
 class Level():

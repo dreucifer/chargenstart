@@ -1,5 +1,5 @@
 from core import admin
-import core.database as db
+import database as db
 from vehicle_lookup.models import Model, Make, Type, Year, Engine, ModelYearEngine, Vehicle
 from flask.ext.admin.contrib.sqla import ModelView
 

@@ -1,7 +1,7 @@
 import csv
 import codecs
 import functools
-import core.database as db
+import database as db
 from vehicle_lookup.models import Year, Make, Model, Type, Engine, ModelYearEngine
 
 def get_or_create(session, obclass, **kwargs):
