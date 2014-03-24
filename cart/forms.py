@@ -1,22 +1,10 @@
 import wtforms as forms
 
 
-class QuantityField(forms.IntegerField):
-
-    def __init__(self, *args, **kwargs):
-        super(QuantityField, self).__init__(min_value=0,
-                                            max_value=999,
-                                            initial=1)
-
-
 class AddToCartForm(forms.Form):
 
-    quantity = QuantityField(label='Quantity')
-    error_messages = {
-        'empty-stock': 'Sorry, this product is currently out of stock',
-        'variant-does-not-exist': 'Oops. We could not find that product',
-        'insufficient-stock': 'Only %(remaining)d remaining in stock.'
-    }
+    quantity = forms.IntegerField(label='Quantity')
+    submit = forms.SubmitField(label='Test')
 
     def __init__(self, *args, **kwargs):
         self.cart = kwargs.pop('cart')
@@ -24,8 +12,16 @@ class AddToCartForm(forms.Form):
         super(AddToCartForm, self).__init__(*args, **kwargs)
 
     def save(self):
-        return self.cart.add(self.product, self.quantity)
+        return self.cart.add(self.product, self.quantity.data or 1, check_quantity=True)
 
     def add_error(self, name, value):
         errors = self.errors.setdefault(name, value)
         errors.append(value)
+
+class ReplaceCartLineForm(AddToCartForm):
+    def __init__(self, *args, **kwargs):
+        super(ReplaceCartLineForm, self).__init__(*args, **kwargs)
+        self.cart_line = self.cart.get_line(self.product)
+
+    def save(self):
+        return self.cart.add(self.product, self.quantity, replace=True)

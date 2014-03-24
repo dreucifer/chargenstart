@@ -1,6 +1,7 @@
-from flask import Blueprint
-import satchless as satch
+from flask import Blueprint, request
+from satchless import cart as scart
 from prices import Price
+from product.models import Product
 
 Cart = Blueprint('cart', __name__, url_prefix='/cart',
                  template_folder='cart/templates',
@@ -10,7 +11,7 @@ import cart.views
 import cart.admin
 
 
-class ShoppingCart(satch.cart.Cart):
+class ShoppingCart(scart.Cart):
     timestamp = None
     billing_address = None
 
@@ -30,8 +31,8 @@ class ShoppingCart(satch.cart.Cart):
             except KeyError:
                 continue
             quantity = item.quantity
-            shoppingcart.add(product, quantity=quantity)
-        return cart
+            shoppingcart.add(product, quantity=quantity, check_quantity=False)
+        return shoppingcart
 
     def __str__(self):
         return "Shopping Cart, Your Cart({0})".format(self.count())
@@ -47,7 +48,7 @@ class ShoppingCart(satch.cart.Cart):
         self.session_cart.clear()
 
 
-class SessionCartLine(satch.cart.CartLine):
+class SessionCartLine(scart.CartLine):
 
     def get_price_per_item(self, **kwargs):
         gross = self.data['unit_price_gross']
@@ -69,7 +70,7 @@ class SessionCartLine(satch.cart.CartLine):
         return instance
 
 
-class SessionCart(satch.cart.Cart):
+class SessionCart(scart.Cart):
 
     def __str__(self):
         return 'SessionCart'
