@@ -1,4 +1,4 @@
-from core import admin
+from core.application import admin
 import database as db
 from vehicle_lookup.models import Model, Make, Type, Year, Engine, ModelYearEngine, Vehicle
 from flask.ext.admin.contrib.sqla import ModelView

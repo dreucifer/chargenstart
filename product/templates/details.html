@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Details - {{ super() }}{% endblock %}
+
+{% block content %}
+<form role='form' method='POST'>
+    {{ form.product.name }}
+    {% for field in form %}
+        {{ field }}
+    {% endfor %}
+    <input type='Submit' value='Add to Cart'/>
+</form>
+{% for item in cart %}
+{{ item.product.name }}{{ item.quantity }}</br>
+{% endfor %}
+{{ cart }}<br>
+{{ session['cart'] }}<br>
+{{ request.cart.serialize }}<br>
+{% endblock %}

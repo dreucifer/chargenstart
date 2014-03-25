@@ -1,5 +1,5 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-from core import app
+from core.application import app
 app.run()

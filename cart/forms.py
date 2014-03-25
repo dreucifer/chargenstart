@@ -1,10 +1,10 @@
 import wtforms as forms
+import wtforms.validators as validators
 
 
 class AddToCartForm(forms.Form):
 
-    quantity = forms.IntegerField(label='Quantity')
-    submit = forms.SubmitField(label='Test')
+    quantity = forms.IntegerField('Quantity', [validators.NumberRange(min=1, max=999)])
 
     def __init__(self, *args, **kwargs):
         self.cart = kwargs.pop('cart')
@@ -12,11 +12,10 @@ class AddToCartForm(forms.Form):
         super(AddToCartForm, self).__init__(*args, **kwargs)
 
     def save(self):
-        return self.cart.add(self.product, self.quantity.data or 1, check_quantity=True)
+        quantity = self.quantity.data or 1
+        return self.cart.add(self.product, quantity=quantity,
+                             check_quantity=True)
 
-    def add_error(self, name, value):
-        errors = self.errors.setdefault(name, value)
-        errors.append(value)
 
 class ReplaceCartLineForm(AddToCartForm):
     def __init__(self, *args, **kwargs):
@@ -24,4 +23,5 @@ class ReplaceCartLineForm(AddToCartForm):
         self.cart_line = self.cart.get_line(self.product)
 
     def save(self):
-        return self.cart.add(self.product, self.quantity, replace=True)
+        return self.cart.add(self.product, quantity=self.quantity,
+                             replace=True)
