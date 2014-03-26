@@ -34,9 +34,10 @@ class Product(db.Base, Item):
         value = re.sub(r'[^\w\s-]', '', value).strip().lower()
         return Markup(re.sub(r'[-\s]+', '-', value))
 
-    def get_formatted_price(self, price):
+    def get_formatted_price(self):
         """ @todo: Docstring """
-        return "{0} {1}".format(price.gross, price.currency)
+        price = self.get_price()
+        return "$%.2f %s" % (price.gross, price.currency or 'USD')
 
     def get_price_per_item(self, **kwargs):
         """ @todo: Docstring """

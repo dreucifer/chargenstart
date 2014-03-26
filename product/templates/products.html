@@ -4,6 +4,7 @@
 
 {% block content %}
 {{ cart }}<br>
+{{ catalog|safe }}
 {{ session['cart'] }}<br>
 {{ request.cart.serialize }}<br>
 {% endblock %}

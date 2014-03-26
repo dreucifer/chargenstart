@@ -1,14 +1,7 @@
 """ @todo: Docstring """
-from flask import Blueprint, request, session
 from satchless import cart as scart
 from prices import Price
 from product.models import Product
-
-Cart = Blueprint('cart', __name__, url_prefix='/cart',
-                 template_folder='cart/templates',
-                 static_folder='cart/static')
-
-import cart.admin
 
 
 class ShoppingCart(scart.Cart):
@@ -22,16 +15,12 @@ class ShoppingCart(scart.Cart):
     @classmethod
     def for_session_cart(cls, session_cart):
         shoppingcart = ShoppingCart(session_cart)
-        product_ids = [item.data['product_id'] for item in session_cart]
-        products = Product.query.filter(Product.id_ in product_ids).all()
-        product_map = dict((p.id_, p) for p in products)
         for item in session_cart:
-            try:
-                product = product_map[item.data['product_id']]
-            except KeyError:
+            product = Product.query.get(item.data['product_id'])
+            if product is None:
                 continue
             quantity = item.quantity
-            shoppingcart.add(product, quantity=quantity, check_quantity=False)
+            shoppingcart.add(product, quantity=quantity, check_quantity=True)
         return shoppingcart
 
     def __str__(self):
@@ -60,6 +49,7 @@ class ShoppingCart(scart.Cart):
 
 class SessionCartLine(scart.CartLine):
 
+
     def get_price_per_item(self, **kwargs):
         gross = self.data['unit_price_gross']
         net = self.data['unit_price_net']
@@ -72,49 +62,26 @@ class SessionCartLine(scart.CartLine):
             'quantity': self.quantity,
             'data': self.data}
 
-    @classmethod
-    def from_storage(cls, data_dict):
-        product = data_dict.pop('product')
-        quantity = data_dict.pop('quantity')
-        data = data_dict['data']
-        instance = SessionCartLine(product, quantity, data=data)
-        return instance
-
 
 class SessionCart(scart.Cart):
+
 
     def __str__(self):
         return 'SessionCart'
 
     @classmethod
     def from_storage(cls, cart_data):
-        cart = SessionCart()
+        sessioncart = SessionCart()
         for line_data in cart_data['items']:
-            cart._state.append(SessionCartLine.from_storage(line_data))
-        return cart
+            sessioncart.add(line_data.pop('product'),
+                            line_data.pop('quantity'),
+                            line_data['data'])
+        return sessioncart
 
     @property
     def serialize(self):
-        cart_data = {
-            'items': [i.serialize for i in self]}
+        cart_data = {'items': [i.serialize for i in self]}
         return cart_data
 
     def create_line(self, product, quantity, data):
         return SessionCartLine(product, quantity, data)
-
-@Cart.before_app_request
-def before_app_request():
-    try:
-        cart_data = session['cart']
-        cart = SessionCart.from_storage(cart_data)
-    except KeyError:
-        cart = SessionCart()
-    setattr(request, 'cart', cart)
-    setattr(request, 'test', 'test')
-
-@Cart.after_app_request
-def after_app_request(request):
-    if hasattr(request, 'cart'):
-        to_session = request.cart.serialize
-        session['cart'] = to_session
-    return request

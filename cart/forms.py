@@ -14,7 +14,7 @@ class AddToCartForm(forms.Form):
     def save(self):
         quantity = self.quantity.data or 1
         return self.cart.add(self.product, quantity=quantity,
-                             check_quantity=True)
+                             check_quantity=False, replace=False)
 
 
 class ReplaceCartLineForm(AddToCartForm):

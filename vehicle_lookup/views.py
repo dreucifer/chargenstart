@@ -1,13 +1,17 @@
 """ This holds the view logic and URL information """
-from flask import redirect, url_for, request, render_template, current_app
+from flask import Blueprint, redirect, url_for, request, render_template, current_app
 from wtforms.fields import SelectField
-from vehicle_lookup import VehicleLookups
 from vehicle_lookup.models import Year, Make, Model, Engine, Type, ModelYearEngine
 from vehicle_lookup.helpers import (
         get_or_create, get_makes, get_types,
         get_models, get_years, get_engines)
 import database as db
 import flask.json as json
+
+VehicleLookups = Blueprint('vehicle_lookup', __name__, url_prefix='/vl',
+        template_folder='templates', static_folder='vehicle_lookup/static')
+
+import vehicle_lookup.admin
 
 @VehicleLookups.route('/lookup')
 def lookup():

@@ -1,0 +1,15 @@
+<center><h4>Product Catalog</h4></center>
+<table class='table table-hover'>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Cost</th>
+    </tr>
+{% for item in products %}
+    <tr onClick="window.location.href={{ url_for('products.details', product_id=item.id_) }};">
+        <td>{{ item.name }}</td>
+        <td>{{ item.description }} <a href="{{ url_for('products.details', product_id=item.id_) }}">More Info</a></td>
+        <td>{{ item.get_formatted_price() }}</td>
+    </tr>
+{% endfor %}
+</table>
