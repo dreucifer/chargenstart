@@ -11,6 +11,7 @@ class Product(db.Base, Item):
     __tablename__ = 'products'
 
     id_ = Column(Integer, primary_key=True)
+    number = Column(String)
     name = Column(String)
     price = Column(Float)
     cost = Column(Float)
@@ -30,7 +31,7 @@ class Product(db.Base, Item):
 
     def get_slug(self):
         """ @todo: Docstring """
-        value = self.name.decode('utf-8', 'ignore')
+        value = " ".join([self.number, self.name]).decode('utf-8', 'ignore')
         value = re.sub(r'[^\w\s-]', '', value).strip().lower()
         return Markup(re.sub(r'[-\s]+', '-', value))
 

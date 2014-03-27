@@ -3,17 +3,13 @@
 {% block title %}Details - {{ super() }}{% endblock %}
 
 {% block content %}
-<form role='form' method='POST'>
-    {{ form.product.name }}
-    {% for field in form %}
+<div class='col-md-12'>
+    <form role='form' method='POST'>
+        {{ form.product.name }}
+        {% for field in form %}
         {{ field }}
-    {% endfor %}
-    <input type='Submit' value='Add to Cart'/>
-</form>
-{% for item in cart %}
-{{ item.product.name }}{{ item.quantity }}</br>
-{% endfor %}
-{{ cart }}<br>
-{{ session['cart'] }}<br>
-{{ request.cart.serialize }}<br>
+        {% endfor %}
+        <input type='Submit' value='Add to Cart'/>
+    </form>
+</div>
 {% endblock %}

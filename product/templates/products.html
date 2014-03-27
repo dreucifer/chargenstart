@@ -3,8 +3,7 @@
 {% block title %}Products - {{ super() }}{% endblock %}
 
 {% block content %}
-{{ cart }}<br>
-{{ catalog|safe }}
-{{ session['cart'] }}<br>
-{{ request.cart.serialize }}<br>
+<div class='col-md-12'>
+    {{ catalog|safe }}
+</div>
 {% endblock %}

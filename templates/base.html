@@ -36,7 +36,18 @@
 <![endif]-->
 
 <!-- Add your site or application content here -->
-    <div class="container">
+    
+    <div id='header' class='container'>
+        <div class='col-md-12'>
+            <h1>Charge and Start</h1>
+            {% block header %}
+            <a href="{{ url_for('index') }}">Home</a> |
+            <a href="{{ url_for('products.index') }}">Catalog</a> |
+            <a href="{{ url_for('cart.index') }}">{{ cart }}</a><br>
+            {% endblock %}
+        </div>
+    </div>
+    <div id='content' class="container">
         {% block content %}
         {% endblock %}
     </div>

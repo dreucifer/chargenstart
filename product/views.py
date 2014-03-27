@@ -10,6 +10,8 @@ Products = Blueprint('products', __name__, url_prefix='/parts',
 
 import product.admin
 
+PER_PAGE = 10
+
 @Products.route('/', methods=['POST', 'GET'])
 def index():
     """ @todo """
@@ -18,6 +20,7 @@ def index():
 
 def catalog():
     """ @todo """
+    count = Product.query.count()
     products = Product.query.all()
     return render_template('_catalog.html', products=products)
 

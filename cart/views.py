@@ -10,22 +10,6 @@ Cart = Blueprint('cart', __name__, url_prefix='/cart',
 
 import cart.admin
 
-@Cart.before_app_request
-def before_app_request():
-    try:
-        cart_data = session['cart']
-        shoppingcart = SessionCart.from_storage(cart_data)
-    except KeyError:
-        shoppingcart = SessionCart()
-    setattr(request, 'cart', shoppingcart)
-
-@Cart.after_app_request
-def after_app_request(response):
-    if hasattr(request, 'cart'):
-        to_session = request.cart.serialize
-        session['cart'] = to_session
-    return response
-
 @Cart.route('/')
 def index():
     shoppingcart = ShoppingCart.for_session_cart(request.cart)

@@ -20,7 +20,8 @@ class ShoppingCart(scart.Cart):
             if product is None:
                 continue
             quantity = item.quantity
-            shoppingcart.add(product, quantity=quantity, check_quantity=True)
+            shoppingcart.add(product, quantity=quantity, check_quantity=False,
+                    skip_session_cart=True)
         return shoppingcart
 
     def __str__(self):
@@ -29,18 +30,20 @@ class ShoppingCart(scart.Cart):
     def get_data_for_product(self, product):
         product_price = product.get_price_per_item()
         product_data = {
+                'product_slug': product.get_slug(),
                 'product_id': product.id_,
                 'unit_price_gross': str(product_price.gross),
                 'unit_price_net': str(product_price.net)}
         return product_data
 
     def add(self, product, quantity=1, data=None, replace=False,
-            check_quantity=True):
+            check_quantity=True, skip_session_cart=False):
         super(ShoppingCart, self).add(product, quantity, data,
                                       replace, check_quantity)
         data = self.get_data_for_product(product)
-        self.session_cart.add(str(product), quantity, data,
-                              replace=True)
+        if not skip_session_cart:
+            self.session_cart.add(str(product), quantity, data,
+                                  replace=replace)
 
     def clear(self):
         super(ShoppingCart, self).clear()
@@ -62,6 +65,14 @@ class SessionCartLine(scart.CartLine):
             'quantity': self.quantity,
             'data': self.data}
 
+    @classmethod
+    def from_storage(cls, line_data):
+        product = line_data['product']
+        quantity = line_data['quantity']
+        data = line_data['data']
+        instance = SessionCartLine(product, quantity, data)
+        return instance
+
 
 class SessionCart(scart.Cart):
 
@@ -73,9 +84,7 @@ class SessionCart(scart.Cart):
     def from_storage(cls, cart_data):
         sessioncart = SessionCart()
         for line_data in cart_data['items']:
-            sessioncart.add(line_data.pop('product'),
-                            line_data.pop('quantity'),
-                            line_data['data'])
+            sessioncart._state.append(SessionCartLine.from_storage(line_data))
         return sessioncart
 
     @property
