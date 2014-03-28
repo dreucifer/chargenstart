@@ -15,11 +15,16 @@ def index():
     shoppingcart = ShoppingCart.for_session_cart(request.cart)
     return render_template('cart.html', cart=shoppingcart)
 
-@Cart.route('/add/<product_id>', methods=['POST'])
-def add_to_cart(product_id):
-    product = get_or_404(Product, product_id)
-    shoppingcart = ShoppingCart.for_session_cart(request.cart)
-    form = AddToCartForm(request.form, product=product, cart=shoppingcart)
-    if form.validate():
-        form.save()
-    return redirect(url_for('.index'))
+@Cart.route('/add', methods=['POST'])
+def add_to_cart():
+    if request.form:
+        try:
+            product = get_or_404(Product, request.form['product_id'])
+        except KeyError:
+            return redirect(request.referrer)
+        shoppingcart = ShoppingCart.for_session_cart(request.cart)
+        form = AddToCartForm(request.form, product=product, cart=shoppingcart)
+        if form.validate():
+            form.save()
+        return redirect(url_for('.index'))
+    return redirect(request.referrer)

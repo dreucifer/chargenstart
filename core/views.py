@@ -1,5 +1,6 @@
 from flask import render_template, request, session
 from core.application import app
+import database as db
 
 from vehicle_lookup.views import VehicleLookups
 from product.views import Products
@@ -26,6 +27,10 @@ def after_request(response):
         to_session = request.cart.serialize
         session['cart'] = to_session
     return response
+
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db.session.remove()
 
 @app.route('/')
 def index():

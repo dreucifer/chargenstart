@@ -1,25 +1,27 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class='col-md-12'>
-    {{ cart }}
-    {% if cart.count() == 0 %}
-    <p class='lead'>Cart is Empty</p>
-    {% else %}
-    <table class='table table-striped'>
+<div class='row'>
+    <div class='col-md-12'>
+        <center><h3>Shopping Cart</h3></center>
         {% if cart.count() == 0 %}
-        <span class='lead'>Cart is Empty</span>
+        <p class='lead'>Cart is Empty</p>
         {% else %}
-        {% for item in cart %}
-        <tr>
-            <td>{{ item.product.name }}</td>
-            <td>{{ item.product.description }}</td>
-            <td>{{ item.product.get_formatted_price() }}</td>
-            <td>{{ item.quantity }}
-        </tr>
-        {% endfor %}
-    </table>
-    {% endif %}
-    {% endif %}
-</div>
+        <table class='table table-striped'>
+            {% if cart.count() == 0 %}
+            <span class='lead'>Cart is Empty</span>
+            {% else %}
+            {% for item in cart %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.product.description }}</td>
+                <td>{{ item.product.get_formatted_price() }}</td>
+                <td>{{ item.quantity }}
+                </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

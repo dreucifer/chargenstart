@@ -4,6 +4,7 @@ import wtforms.validators as validators
 
 class AddToCartForm(forms.Form):
 
+    product_id = forms.HiddenField('Product ID')
     quantity = forms.IntegerField('Quantity', [validators.NumberRange(min=1, max=999)])
 
     def __init__(self, *args, **kwargs):

@@ -5,11 +5,37 @@
         <th>Description</th>
         <th>Cost</th>
     </tr>
-{% for item in products %}
+    
+    {% for item in pagination.items %}
     <tr onClick="window.location.href={{ url_for('products.details', product_id=item.id_) }};">
         <td>{{ item.name }}</td>
         <td>{{ item.description }} <a href="{{ url_for('products.details', product_id=item.id_) }}">More Info</a></td>
         <td>{{ item.get_formatted_price() }}</td>
     </tr>
-{% endfor %}
+    {% endfor %}
 </table>
+<center>
+    <ul class="pagination">
+        {% if pagination.has_prev %}
+        <li><a href="{{ url_for('products.catalog') }}">&laquo;</a></li>
+        {% else %}
+        <li class="disabled"><span>&laquo;</span></li>
+        {% endif %}
+        {% for page in pagination.iter_pages() %}
+        {% if page %}
+        {% if page != pagination.page %}
+        <li><a href="{{ url_for('products.catalog') }}">{{ page }}</a></li>
+        {% else %}
+        <li class="active"><span>{{ page }}</span></li>
+        {% endif %}
+        {% else %}
+        <li><span>...</span></li>
+        {% endif %}
+        {% endfor %}
+        {% if pagination.has_next %}
+        <li><a href="{{ url_for('products.catalog') }}">&raquo;</a></li>
+        {% else %}
+        <li class="disabled"><span>&raquo;</span></li>
+        {% endif %}
+    </ul>
+</center>

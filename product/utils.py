@@ -49,6 +49,63 @@ class BaseStep(Step):
         """ @todo """
         raise NotImplementedError
 
+from math import ceil
+
+class Pagination(object):
+
+    def __init__(self, query, page, per_page, total, items):
+        self.query = query
+        self.page = page
+        self.per_page = per_page
+        self.total = total
+        self.items = items
+
+    @property
+    def pages(self):
+        if self.per_page == 0:
+            pages = 0
+        else:
+            pages = int(ceil(self.total / float(self.per_page)))
+        return pages
+
+    def prev(self, error_out=False):
+        assert self.query is not None, \
+                'a query object is required for this to work'
+        return get_for_page(self.query, self.page - 1, self.per_page, error_out)
+
+    @property
+    def prev_num(self):
+        return self.page - 1
+
+    @property
+    def has_prev(self):
+        return self.page > 1
+
+    def next(self, error_out=False):
+        assert self.query is not None, \
+                'a query object is required for this to work'
+        return get_for_page(self.query, self.page + 1, self.per_page, error_out)
+
+    @property
+    def next_num(self):
+        return self.page + 1
+    @property
+    def has_next(self):
+        return self.page < self.pages
+
+    def iter_pages(self, left_edge=2, left_current=2,
+            right_edge=2, right_current=5):
+        last = 0
+        for num in xrange(1, self.pages + 1):
+            if num <= left_edge or \
+               (num > self.page - left_current - 1 and \
+                num < self.page + right_current) or \
+               num > self.pages - right_edge:
+                if last + 1 != num:
+                    yield None
+                yield num
+                last = num
+
 def get_or_404(model, object_id):
     """ @todo """
     result = model.query.get(object_id)
@@ -62,3 +119,17 @@ def first_or_abort(model, **kwargs):
     if result is None:
         abort(404)
     return result
+
+def get_for_page(query, page=1, per_page=20, error_out=True):
+    if error_out and page < 1:
+        abort(404)
+    offset = (page - 1) * per_page
+    items = query.limit(per_page).offset(offset).all()
+    if not items and page != 1 and error_out:
+        abort(404)
+    if page == 1  and len(items) < per_page:
+        total = len(items)
+    else:
+        total = query.count()
+
+    return Pagination(query, page, per_page, total, items)

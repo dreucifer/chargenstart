@@ -2,7 +2,7 @@
 from flask import render_template, request, flash, session, Blueprint
 from product.models import Product
 from cart.forms import AddToCartForm
-from product.utils import get_or_404, first_or_abort
+from product.utils import get_or_404, first_or_abort, get_for_page
 from cart import ShoppingCart, SessionCart
 
 Products = Blueprint('products', __name__, url_prefix='/parts',
@@ -16,22 +16,20 @@ PER_PAGE = 10
 def index():
     """ @todo """
     cart = ShoppingCart.for_session_cart(request.cart)
-    return render_template('products.html', cart=cart, catalog=catalog())
+    return render_template('products.html', cart=cart,
+            catalog=catalog(1))
 
-def catalog():
+@Products.route('/page/<int:page_number>')
+def catalog(page_number):
     """ @todo """
-    count = Product.query.count()
-    products = Product.query.all()
-    return render_template('_catalog.html', products=products)
+    pagination = get_for_page(Product.query, page_number, per_page=10)
+    return render_template('_catalog.html', pagination=pagination)
 
 @Products.route('/info/<product_id>', methods=['GET', 'POST'])
 def details(product_id):
     """ @todo """
     product = get_or_404(Product, product_id)
     cart = ShoppingCart.for_session_cart(request.cart)
-    form = AddToCartForm(request.form, product=product, cart=cart)
-
-    if request.method == 'POST' and form.validate():
-        form.save()
+    form = AddToCartForm(request.form, product=product, cart=cart, product_id=product.id_)
 
     return render_template('details.html', product=product, form=form, cart=cart)
