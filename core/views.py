@@ -34,7 +34,7 @@ def shutdown_session(exception=None):
 
 @app.route('/')
 def index():
-    from product.views import catalog
+    from product.views import catalog_page
     shoppingcart = ShoppingCart.for_session_cart(request.cart)
-    catalog = catalog()
+    catalog = catalog_page(1)
     return render_template('index.html', catalog=catalog, cart=shoppingcart)

@@ -17,10 +17,16 @@ def index():
     """ @todo """
     cart = ShoppingCart.for_session_cart(request.cart)
     return render_template('products.html', cart=cart,
-            catalog=catalog(1))
+            catalog=catalog_page(1))
 
-@Products.route('/page/<int:page_number>')
+@Products.route('/catalog/', defaults={'page_number': 1})
+@Products.route('/catalog/page/<int:page_number>')
 def catalog(page_number):
+    cat_page = catalog_page(page_number)
+    cart = ShoppingCart.for_session_cart(request.cart)
+    return render_template('catalog.html', cart=cart, catalog_page=cat_page)
+
+def catalog_page(page_number):
     """ @todo """
     pagination = get_for_page(Product.query, page_number, per_page=10)
     return render_template('_catalog.html', pagination=pagination)

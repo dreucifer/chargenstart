@@ -24,7 +24,7 @@
         {% for page in pagination.iter_pages() %}
         {% if page %}
         {% if page != pagination.page %}
-        <li><a href="{{ url_for('products.catalog') }}">{{ page }}</a></li>
+        <li><a href="{{ url_for('products.catalog', page_number=page) }}">{{ page }}</a></li>
         {% else %}
         <li class="active"><span>{{ page }}</span></li>
         {% endif %}
