@@ -11,7 +11,7 @@
             <p>{{ product.description }}</p>
             {{ form.product_id }}
             <center>
-                {{ form.quantity.label }} {{ form.quantity }}
+                {{ form.quantity.label }} {{ form.quantity(size=3) }}
                 <input type='Submit' value='Add to Cart'/>
             </center>
         </form>

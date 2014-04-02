@@ -1,10 +1,40 @@
 """ @todo: Docstring """
 from flask import Markup, url_for
 import re
-from sqlalchemy import Column, Integer, String, Float, Text
+from sqlalchemy import Column, Integer, String, Float, Text, ForeignKey
+from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm.collections import attribute_mapped_collection
 from satchless.item import Item
 from prices import Price
 import database as db
+
+class Category(db.Base):
+    __tablename__ = 'categories'
+
+    id_ = Column(Integer, primary_key=True)
+    parent_id = Column(Integer, ForeignKey('categories.id_'))
+    children = relationship('Category',
+            cascade="all, delete-orphan",
+            backref=backref('parent', remote_side=[id_]))
+    name = Column(String)
+    slug = Column(String, index=True)
+    description = Column(Text)
+
+    def __init__(self, parent=None):
+        self.parent = parent
+
+    def __repr__(self):
+        return "Category(name=%r, id=%r, parent_id=%r)" % \
+                (self.name, self.id_, self.parent_id)
+
+    def dump(self, _indent=0):
+        return "\t" * _indent + repr(self) + \
+                "\n" + \
+                "".join([c.dump(_indent + 1)
+                        for c in self.children])
+
+    def __unicode__(self):
+        return self.name
 
 class Product(db.Base, Item):
     """ @todo: Docstring """
