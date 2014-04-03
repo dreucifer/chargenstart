@@ -1,19 +1,25 @@
-<div class='row'>
-<div class='col-md-12 text-center'>{{ product.name }}</div>
+<div class="row">
+<div class="col-md-12 text-center">
+{{ product.name }}</div>
 </div><br>
-<div class='row'>
-    <div class='col-md-3 text-center'>
-        <img src='' height='160' width='160'>
+<div class="row">
+    <div class="col-md-3 text-center">
+        {% if product.image_path %}
+        <img src="{{ url_for('static', filename=product.image_path) }}" height="160" width="160">
+        {% else %}
+        <img src="" height="160" width="160">
+        {% endif %}
     </div>
-    <div class='col-md-6'>
+    <div class="col-md-6">
         <p>{{ product.description }}</p>
     </div>
-    <div class='col-md-3'>
-        <form role='form' action='{{ url_for("cart.add_to_cart") }}' method='POST'>
+    <div class="col-md-3">
+        <form role="form" action="{{ url_for('cart.add_to_cart') }}" method="POST">
+            <h4>{{ product.number }}</h4>
             <b>{{ product.get_formatted_price() }}</b><br>
             {{ form.product_id }}
             {{ form.quantity.label }} {{ form.quantity(size=3) }}<br>
-            <input type='submit' value='Add to Cart'/>
+            <input type="submit" value="Add to Cart"/>
         </form>
     </div>
 </div>

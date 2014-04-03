@@ -8,19 +8,23 @@
         <p class='lead'>Cart is Empty</p>
         {% else %}
         <table class='table table-striped'>
-            {% if cart.count() == 0 %}
-            <span class='lead'>Cart is Empty</span>
-            {% else %}
+            <tr>
+                <th>Number</th>
+                <th>Name</th>
+                <th>Price/ea</th>
+                <th>Qty</th>
+                <th>Total</th>
+            </tr>
             {% for item in cart %}
             <tr>
                 <td>{{ item.product.name }}</td>
                 <td>{{ item.product.description }}</td>
                 <td>{{ item.product.get_formatted_price() }}</td>
                 <td>{{ item.quantity }}
+                <td>{{ item.product.get_formatted_price(price=item.get_total()) }}
                 </tr>
                 {% endfor %}
             </table>
-            {% endif %}
             {% endif %}
         </div>
     </div>

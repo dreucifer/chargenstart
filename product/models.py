@@ -1,5 +1,5 @@
 """ @todo: Docstring """
-from flask import Markup, url_for
+from flask import url_for, Markup
 import re
 from sqlalchemy import Column, Integer, String, Float, Text, ForeignKey
 from sqlalchemy.orm import relationship, backref
@@ -33,6 +33,20 @@ class Category(db.Base):
                 "".join([c.dump(_indent + 1)
                         for c in self.children])
 
+    @property
+    def html(self):
+        rval = """\
+    <ul>
+        <li>
+            {0}
+            {1}
+        </li>
+    </ul>""".format(unicode(self),
+            "\n".join([child.html
+                for child in self.children]))
+        return rval
+
+
     def __unicode__(self):
         return self.name
 
@@ -47,6 +61,8 @@ class Product(db.Base, Item):
     cost = Column(Float)
     weight = Column(Float)
     description = Column(Text)
+    long_description = Column(Text)
+    image_path = Column(String)
 
     def __str__(self):
         return self.name
@@ -65,9 +81,10 @@ class Product(db.Base, Item):
         value = re.sub(r'[^\w\s-]', '', value).strip().lower()
         return Markup(re.sub(r'[-\s]+', '-', value))
 
-    def get_formatted_price(self):
+    def get_formatted_price(self, price=None):
         """ @todo: Docstring """
-        price = self.get_price()
+        if price is None:
+            price = self.get_price()
         return "$%.2f %s" % (price.gross, price.currency or 'USD')
 
     def get_price_per_item(self, **kwargs):

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, session, redirect, url_for, render_template
+from flask import Blueprint, request, session, redirect, url_for, render_template, flash
 from cart import SessionCart, ShoppingCart
 from cart.forms import AddToCartForm
 from product.utils import get_or_404
@@ -25,6 +25,8 @@ def add_to_cart():
         shoppingcart = ShoppingCart.for_session_cart(request.cart)
         form = AddToCartForm(request.form, product=product, cart=shoppingcart)
         if form.validate():
+            flash('Added {0} {1} to the cart'.format(
+                form.quantity.data, product.name))
             form.save()
         return redirect(url_for('.index'))
     return redirect(request.referrer)

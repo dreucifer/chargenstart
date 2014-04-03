@@ -1,5 +1,5 @@
 """ @todo """
-from flask import render_template, request, flash, session, Blueprint
+from flask import render_template, request, flash, session, Blueprint, abort
 from product.models import Product, Category
 from cart.forms import AddToCartForm
 from product.utils import get_or_404, first_or_abort, get_for_page
@@ -15,10 +15,9 @@ PER_PAGE = 10
 @Products.route('/', methods=['POST', 'GET'])
 def index():
     """ @todo """
+    cat_page = _catalog_page(1, per_page=10)
     cart = ShoppingCart.for_session_cart(request.cart)
-    category_dump = Category.query.first().dump()
-    return render_template('products.html', cart=cart,
-            category_dump=category_dump)
+    return render_template('products.html', cart=cart, catalog=cat_page)
 
 @Products.route('/catalog/', defaults={'page_number': 1})
 @Products.route('/catalog/page/<int:page_number>')
