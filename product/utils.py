@@ -1,6 +1,7 @@
 """ @todo """
 from flask import render_template, abort
 from satchless.process import InvalidData, Step
+from product.models import Category
 
 class BaseStep(Step):
     """ @todo """
@@ -133,3 +134,13 @@ def get_for_page(query, page=1, per_page=20, error_out=True):
         total = query.count()
 
     return Pagination(query, page, per_page, total, items)
+
+def get_by_slug(model, slug):
+    try:
+        model = globals()[model]
+    except KeyError:
+        abort(500)
+    retval = model.query.filter_by(slug=slug).first()
+    if retval is None:
+        abort(404)
+    return retval

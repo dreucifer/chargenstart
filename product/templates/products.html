@@ -3,7 +3,16 @@
 {% block title %}Products - {{ super() }}{% endblock %}
 
 {% block content %}
-<div class='col-md-12'>
-    {{ catalog|safe }}
+<div class='row'>
+    <div class='col-md-12 text-center'>
+        <hr>
+        <ul class='lead list-unstyled'>
+            {% for category in categories %}
+            <li>
+            <a href='{{ url_for(".category", category_slug=category.slug) }}'>{{ category }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
 </div>
 {% endblock %}

@@ -23,6 +23,10 @@ def del_image(mapper, connection, target):
         except OSError:
             pass
 
+class CategoryView(ModelView):
+    form_excluded_columns = ('children', 'products')
+
+
 class ProductView(ModelView):
     def _list_thumbnail(view, context, model, name):
         if not model.image_path:
@@ -43,4 +47,4 @@ class ProductView(ModelView):
             }
 
 admin.add_view(ProductView(Product, db.session))
-admin.add_view(ModelView(Category, db.session))
+admin.add_view(CategoryView(Category, db.session))

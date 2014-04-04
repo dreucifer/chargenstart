@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{{ category }}</h2>
+{% for product in category.products %}
+{{ _product_listing(product)|safe }}
+{% endfor %}
+{% endblock %}

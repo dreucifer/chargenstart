@@ -1,7 +1,7 @@
 """ @todo: Docstring """
 from flask import url_for, Markup
 import re
-from sqlalchemy import Column, Integer, String, Float, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, Text, ForeignKey, Table
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.orm.collections import attribute_mapped_collection
 from satchless.item import Item
@@ -50,6 +50,10 @@ class Category(db.Base):
     def __unicode__(self):
         return self.name
 
+product_category = Table('product_category', db.Base.metadata,
+        Column('product_id', Integer, ForeignKey('products.id_')),
+        Column('category_id', Integer, ForeignKey('categories.id_')))
+
 class Product(db.Base, Item):
     """ @todo: Docstring """
     __tablename__ = 'products'
@@ -63,6 +67,9 @@ class Product(db.Base, Item):
     description = Column(Text)
     long_description = Column(Text)
     image_path = Column(String)
+    categories = relationship('Category',
+            secondary=product_category,
+            backref='products')
 
     def __str__(self):
         return self.name
